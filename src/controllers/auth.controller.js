@@ -1,5 +1,8 @@
+import { HTTP_STATUS } from '../config/constants.js';
 import User from '../models/User.model.js';
+import errorResponse from '../utils/errorResponse.js';
 import generateToken from '../utils/generateToken.js';
+import successResponse from '../utils/successResponse.js';
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -8,14 +11,14 @@ export const registerUser = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'Email already in use' });
+      return errorResponse(res, HTTP_STATUS.CONFLICT, 'Email already in use');
     }
 
     const user = await User.create({ firstName, lastName, email, password });
 
-    generateToken(res, user._id); // Set JWT cookie
+    generateToken(res, user._id);
 
-    res.status(201).json({
+    return successResponse(res, HTTP_STATUS.CREATED, 'User registered successfully', {
       _id: user._id,
       email: user.email,
       role: user.role
@@ -27,21 +30,35 @@ export const registerUser = async (req, res, next) => {
 
 export const loginUser = async (req, res, next) => {
   try {
+    console.log("req body", req.body);
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-      generateToken(res, user._id);
-      return res.json({ _id: user._id, email: user.email, role: user.role });
+      const token =generateToken(res, user._id);
+
+      return successResponse(
+        res,
+        HTTP_STATUS.OK,
+        "User logged in successfully!",
+        {
+          _id: user._id,
+          email: user.email,
+          role: user.role,
+          token
+        }
+      );
     }
 
-    res.status(401).json({ message: 'Invalid email or password' });
+    return errorResponse(res, HTTP_STATUS.UNAUTHORIZED, 'Invalid email or password');
   } catch (err) {
     next(err);
   }
 };
 
+
 export const logoutUser = (req, res) => {
   res.clearCookie('jwt');
-  res.json({ message: 'Logged out successfully' });
+  
+  return successResponse(res, HTTP_STATUS.OK, 'Logged out successfully');
 };
