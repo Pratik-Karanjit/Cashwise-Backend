@@ -11,31 +11,36 @@ import authRoutes from "./src/routes/auth.routes.js";
 
 dotenv.config();
 
-// Connect to DB
 connectDB();
 
 const app = express();
 
-// Security headers
 app.use(helmet());
 
-// Accept any origin (for now, no credentials)
-app.use(cors()); // <-- THIS ACCEPTS ANY ORIGIN
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173", 
+  process.env.CLIENT_URL, 
+];
 
-// Logging
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(morgan("dev"));
 
-// Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Cookie parser
 app.use(cookieParser());
 
-// Routes
 app.use("/api/auth", authRoutes);
 
-// Global error handler
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;

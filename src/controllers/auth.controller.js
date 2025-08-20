@@ -36,7 +36,7 @@ export const loginUser = async (req, res, next) => {
 
     if (user && (await user.matchPassword(password))) {
       const token =generateToken(res, user._id);
-
+      console.log("generated token is: ", token)
       return successResponse(
         res,
         HTTP_STATUS.OK,
@@ -62,3 +62,12 @@ export const logoutUser = (req, res) => {
   
   return successResponse(res, HTTP_STATUS.OK, 'Logged out successfully');
 };
+
+
+export const testFunc = (req, res) => {
+  console.log("entered test func")
+  const data = {
+    first: 'data'
+  }
+  return successResponse(res, HTTP_STATUS.ACCEPTED, 'API works!', data)
+}
