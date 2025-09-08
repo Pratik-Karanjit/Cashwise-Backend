@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./src/config/db.js";
 import errorMiddleware from "./src/middlewares/error.middleware.js";
 import authRoutes from "./src/routes/auth.routes.js";
+import expenseRoutes from "./src/routes/expense.routes.js";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/expense", expenseRoutes)
 
 app.use(errorMiddleware);
 

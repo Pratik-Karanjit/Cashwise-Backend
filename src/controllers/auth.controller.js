@@ -34,6 +34,8 @@ export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
+    console.log("user info", user)
+
     if (user && (await user.matchPassword(password))) {
       const token =generateToken(res, user._id);
       console.log("generated token is: ", token)
@@ -45,6 +47,7 @@ export const loginUser = async (req, res, next) => {
           _id: user._id,
           email: user.email,
           role: user.role,
+          hasExpenses: user.hasExpenses,
           token
         }
       );
