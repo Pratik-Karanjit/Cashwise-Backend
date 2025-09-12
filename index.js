@@ -19,7 +19,7 @@ const app = express();
 app.use(helmet());
 
 const allowedOrigins = [
-  "http://localhost:3000",
+  "http://localhost:9000",
   "http://localhost:5173", 
   process.env.CLIENT_URL, 
 ];
