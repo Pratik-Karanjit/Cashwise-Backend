@@ -1,21 +1,27 @@
-services: 
+services:
   backend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - '9500:9500'
+      - "8080:8080"        # Map host 8080 to container 8080 (matches Dockerfile)
     env_file:
-      - .env
+      - .env               # Loads environment variables from your .env file
+    environment:
+      - NODE_ENV=production # Explicitly set production mode
+      - PORT=8080
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/app             # Mount source for live reload (remove in production)
+      - /app/node_modules  # Prevents overwriting node_modules in container
+    command: ["npm", "start"]
 
   db:
     image: mongo:6
     restart: always
     ports:
-      - "27017:27017"
+      - "27017:27017"      # MongoDB port
     volumes:
-      - mongo_data:/data/db
+      - mongo_data:/data/db # Persistent data volume
 
 volumes:
   mongo_data: {}
