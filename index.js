@@ -9,6 +9,7 @@ import connectDB from "./src/config/db.js";
 import errorMiddleware from "./src/middlewares/error.middleware.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import expenseRoutes from "./src/routes/expense.routes.js";
+import feedbackRoutes from "./src/routes/feedback.routes.js";
 
 dotenv.config();
 
@@ -42,6 +43,8 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/expense", expenseRoutes)
+app.use("/api/feedback", feedbackRoutes)
+
 
 app.use(errorMiddleware);
 
