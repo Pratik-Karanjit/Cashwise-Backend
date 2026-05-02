@@ -1,13 +1,19 @@
-services: 
+services:
   backend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - '9500:9500'
+      - "9090:8080"           # Host 9090 -> Container 8080
     env_file:
       - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=8080             # <-- match Dockerfile
     volumes:
       - .:/app
       - /app/node_modules
+    command: ["npm", "start"]
 
   db:
     image: mongo:6

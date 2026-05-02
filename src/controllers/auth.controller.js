@@ -74,3 +74,9 @@ export const testFunc = (req, res) => {
   }
   return successResponse(res, HTTP_STATUS.ACCEPTED, 'API works!', data)
 }
+
+export const healthCheck = (req, res) => {
+  res.status(200).json({
+    message: "Everything is working good!"
+  })
+}
